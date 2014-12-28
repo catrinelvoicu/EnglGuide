@@ -18,8 +18,8 @@
  under the License.
 -->
 <widget xmlns     = "http://www.w3.org/ns/widgets"
-        id        = "io.cordova.helloCordova"
-        version   = "3.6.3">
+        id        = "com.mcatrin.apengl"
+        version   = "2.9.1">
     <name>Hello Cordova</name>
 
     <description>
@@ -27,7 +27,7 @@
     </description>
 
     <author href="http://cordova.io" email="dev@cordova.apache.org">
-        Apache Cordova Team
+        mcv
     </author>
 
     <access origin="*"/>
