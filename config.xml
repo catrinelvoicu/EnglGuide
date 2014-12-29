@@ -5,9 +5,9 @@ id = "com.phonegapessentials.ex151"
 version = "1.0.0">
 
   <name>English Guide</name>
-  <description>An example application that uses the PhoneGap Contacts API</description>
-  <author href="http://johnwargo.com"
-  email="john@johnwargo.com">John M. Wargo</author>
+  <description>An example application that uses English Guide</description>
+  <author href="http://onlearningtrends.com"
+  email="mactrinelvoicu@yahoo.fr">Mirela Catrinel</author>
   <gap:platforms>
     <gap:platform name="android" minVersion="2.1" />
     <gap:platform name="webos" />
