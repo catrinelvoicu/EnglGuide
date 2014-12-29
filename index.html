@@ -11,28 +11,48 @@
     
   </head>
   <body>
-    <section id="main" data-role="page" >
-      <header data-role="header">
-        <h1>Contacts Demo #1</h1>
-      </header>
-      <div data-role="content">
-       
-       <ul data-role="listview">
-      <li><a href="#">Grammar</a></li>
-      <li><a href="#">Expressions</a></li>
-      <li><a href="#">List of words</a></li>
-      <li><a href="#">Grammar</a></li>
-      <li><a href="#">Expressions</a></li>
-      <li><a href="#">List of words</a></li>
-      <li><a href="#">Grammar</a></li>
+    
+<div data-role="page" id="pageone">
+  <div data-role="header">
+    <h1>English - conversation guide</h1>
+  </div>
+
+  <div data-role="main" class="ui-content">
+    <ul data-role="listview">
+      <li><a href="#grammar">Grammar</a></li>
       <li><a href="#">Expressions</a></li>
       <li><a href="#">List of words</a></li>
     </ul>
-      </div>
-      <footer data-role="footer" data-position="fixed">
-        <a href="http://onlearningtrends.com" target="_blank">English Essentials</a>
+    
+  </div>
+
+  <div data-role="footer">
+   <a href="http://onlearningtrends.com" target="_blank">English Essentials</a>
       </footer>
-    </section>
+  </div>
+</div> 
+
+<div data-role="page" id="grammar">
+  <div data-role="header">
+    <h1>English - conversation guide</h1>
+    <a href="#pageone" class="ui-btn ui-icon-home ui-btn-icon-left">Home</a>
+  </div>
+
+  <div data-role="main" class="ui-content">
+   <h2>Grammar:</h2>
+    <ul data-role="listview">
+      <li><a href="#">Numeral</a></li>
+      <li><a href="#">Pronoun</a></li>
+      <li><a href="#">Verb</a></li>
+    </ul>
+  </div>
+
+  <div data-role="footer">
+      <a href="http://onlearningtrends.com" target="_blank">English Essentials</a>
+      </footer>
+  </div>
+</div> 
+          
     
   </body>
 </html>
