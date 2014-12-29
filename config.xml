@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <widget xmlns = "http://www.w3.org/ns/widgets"
 xmlns:gap = "http://phonegap.com/ns/1.0"
-id = "com.phonegapessentials.ex151"
+id = "com.enguide.en1"
 version = "1.0.0">
 
-  <name>Example 15-1</name>
-  <description>An example application that uses the PhoneGap Contacts API</description>
-  <author href="http://johnwargo.com"
-  email="john@johnwargo.com">John M. Wargo</author>
+  <name>EnglishGuide</name>
+  <description>An example application that uses English Guide/description>
+  <author href="http://onlearningtrends.com"
+  email="mcatrinelvoicu@yahoo.fr">M C V</author>
   <gap:platforms>
     <gap:platform name="android" minVersion="2.1" />
     <gap:platform name="webos" />
