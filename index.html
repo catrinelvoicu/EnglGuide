@@ -1,122 +1,195 @@
 <!DOCTYPE html>
 <html>
-<head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
-<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
-<script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
-</head>
-<body>
+  <head>
+    <title>Example 15-1</title>
+    <meta name="viewport" content="width=device-width, height=device-height initial-scale=1.0, maximum-scale=1.0, user-scalable=no;" />
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="jquery.mobile1.0b3.min.css" />
+    <script type="text/javascript" charset="utf-8" src="jquery1.6.4.min.js"></script>
+    <script type="text/javascript" charset="utf-8" src="jquery.mobile1.0b3.min.js"></script>
+    <script type="text/javascript" charset="utf-8" src="phonegap.js"></script>
+    <script type="text/javascript">
+      //Some HTML constants we'll use
+      var br = "<br />";
+      var hr = "<hr />";
+      var endA = "</a>";
+      var contactInfo;
 
-<div data-role="page" id="pageone">
-  <div data-role="header">
-    <h1>English - conversation guide</h1>
-  </div>
+      function onBodyLoad() {
+        //During testing, Let me know we got this far
+        alert("onBodyLoad");
+        //Add the PhoneGap deviceready event listener
+        document.addEventListener("deviceready", onDeviceReady, false);
+      }
 
-  <div data-role="main" class="ui-content">
-    <ul data-role="listview">
-      <li><a href="#grammar">Grammar</a></li>
-      <li><a href="#expressions">Expressions</a></li>
-      <li><a href="#listW">List of words</a></li>
-    </ul>
-    
-  </div>
+      function onDeviceReady() {
+        //During testing, Let me know PhoneGap actually
+        // initialized
+        alert("onDeviceReady");
+      }
 
-  <div data-role="footer">
-    <h1>Footer Text</h1>
-  </div>
-</div> 
+      function getContact(contact) {
+        //Build a string representing the file name we're going
+        // after
+        var contactFile = "contacts/" + contact + ".js";
+        //Get the contact information from the file system then
+        // call the callback function to parse the data
+        $.getJSON(contactFile, showContact);
+      }
 
-<div data-role="page" id="grammar">
-  <div data-role="header">
-    <h1>English - conversation guide</h1>
-    <a href="#pageone" class="ui-btn ui-icon-home ui-btn-icon-left">Home</a>
-  </div>
+      function showContact(contactData) {
+        //======================================================
+        //Populate the Contact Details page with information
+        //about this contact
+        //======================================================
+        var dt = "";
+        //Store the contact data in our global variable so the
+        // AddContact function will have something to work with
+        contactInfo = contactData;
+        //======================================================
+        //First set the header content for the page to match the
+        //contact's full name
+        //======================================================
+        $('#contactName').text(contactData.FullName);
+        //======================================================
+        //Then populate the body of the content area with
+        //detailed fields from the data source
+        //======================================================
+        dt = '<b>First Name:</b> ' + contactData.FirstName + br;
+        dt += '<b>Last Name:</b> ' + contactData.LastName + br;
+        dt += '<b>Email Address:</b> <a href="mailto:' + contactData.EmailAddress + '">' + contactData.EmailAddress + endA + br;
+        dt += '<b>Office Phone:</b> <a href="tel:' + contactData.OfficePhone + '">' + contactData.OfficePhone + endA + br;
+        dt += '<b>Mobile Phone:</b> <a href="tel:' + contactData.MobilePhone + '">' + contactData.MobilePhone + endA + br;
+        $('#detailContent').html(dt);
+        //======================================================
+        //Then switch to the Contact Details page
+        //======================================================
+        $.mobile.changePage("#contactDetail", "slide", false, true);
+      }
 
-  <div data-role="main" class="ui-content">
-   <h2>Grammar:</h2>
-    <ul data-role="listview">
-      <li><a href="#numeral">Numeral</a></li>
-      <li><a href="#pronoun">Pronoun</a></li>
-      <li><a href="#verb">Verb</a></li>
-    </ul>
-  </div>
+      function addContact() {
+        alert("Adding " + contactInfo.FullName + " to contacts application");
+        //======================================================
+        //Create a new contact object
+        //======================================================
+        var contact = navigator.contacts.create();
+        //======================================================
+        //Populate the contact object with values
+        //======================================================
+        contact.displayName = contactInfo.FullName;
+        contact.nickname = contactInfo.FullName;
+        //======================================================
+        //Populate the Contact's Name entries
+        //======================================================
+        var tmpName = new ContactName();
+        tmpName.givenName = contactInfo.FirstName;
+        tmpName.familyName = contactInfo.LastName;
+        tmpName.formatted = contactInfo.FullName;
+        contact.name = tmpName;
+        //======================================================
+        //Populate Phone Number Entries
+        //======================================================
+        var phoneNums = [2];
+        phoneNums[0] = new ContactField('work', contactInfo.OfficePhone, false);
+        phoneNums[1] = new ContactField('mobile', contactInfo.MobilePhone, true);
+        contact.phoneNumbers = phoneNums;
+        //======================================================
+        //Populate Email Address
+        //======================================================
+        var emailAddresses = [1];
+        emailAddresses[0] = new ContactField('home', contactInfo.EmailAddress, true);
+        contact.emails = emailAddresses;
 
-  <div data-role="footer">
-    <h1>Footer Text</h1>
-  </div>
-</div> 
+        // save to device
+        contact.save(onContactSaveSuccess, onContactSaveError);
+      }
 
+      function onContactSaveSuccess() {
+        alert(contactInfo.FullName + " was successfully saved to the device contacts database");
+      }
 
-<div data-role="page" id="numeral">
-  <div data-role="header">
-    <h1>English - conversation guide</h1>
-    <a href="#pageone" class="ui-btn ui-icon-home ui-btn-icon-left">Home</a>
-  </div>
-
-  <div data-role="main" class="ui-content">
-   
-
-
-
-
-
-
-
-   
-<hr color="#CC0000">
-<hr color="#CC0000">
-<div class="line_text1"><font color="#CC0000" size=6><b><a href="grammar.html" style="text-decoration:none; color: #CC0000">Grammar &raquo Numeral</a></b></font></div> 
-<hr color="#CC0000">
-<hr color="#CC0000">
-<a href="http://translate.google.com/"> Google Translate </a>
-<table>
-<tr><td>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td> <div class="line_text1">  <font color="#CC0000" size=6> <b>The Cardinal Numeral </b></font> </div>  </td><td> <div class="line_text1">  <font color="#CC0000" size=6>  &#240&#601 &#712k&#593&#720d in &#601l &#712nju&#720m &#601r&#601l </font> </div>  </td></tr>
-<tr><td>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td> <div class="line_text1">  <font color="#CC0000" size=6>   </font> </div>  </td><td> <div class="line_text1">  <font color="#CC0000" size=6>   </font> </div>  </td></tr>
-
-<tr><td>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td> <div class="line_text1">  <font color="#CC0000" size=6> zero  </font> </div>  </td><td> <div class="line_text1">  <font color="#CC0000" size=6> &#712z&#618&#601r &#601&#650  </font> </div>  </td></tr>
-<tr><td>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td> <div class="line_text1">  <font color="#CC0000" size=6> one </font> </div>  </td><td> <div class="line_text1">  <font color="#CC0000" size=6> w&#652n </font> </div>  </td></tr>
-<tr><td>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td> <div class="line_text1">  <font color="#CC0000" size=6> two </font> </div>  </td><td> <div class="line_text1">  <font color="#CC0000" size=6> tu&#720 </font> </div>  </td></tr>
-<tr><td>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td> <div class="line_text1">  <font color="#CC0000" size=6> three </font> </div>  </td><td> <div class="line_text1">  <font color="#CC0000" size=6> &#952r&#618&#720  </font> </div>  </td></tr>
-<tr><td>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td> <div class="line_text1">  <font color="#CC0000" size=6> four  </font> </div>  </td><td> <div class="line_text1">  <font color="#CC0000" size=6> f&#596&#720   </font> </div>  </td></tr>
-<tr><td>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td> <div class="line_text1">  <font color="#CC0000" size=6> five  </font> </div>  </td><td> <div class="line_text1">  <font color="#CC0000" size=6> fa&#618v  </font> </div>  </td></tr>
-<tr><td>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td> <div class="line_text1">  <font color="#CC0000" size=6> six </font> </div>  </td><td> <div class="line_text1">  <font color="#CC0000" size=6> s&#618ks  </font> </div>  </td></tr>
-<tr><td>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td> <div class="line_text1">  <font color="#CC0000" size=6> seven </font> </div>  </td><td> <div class="line_text1">  <font color="#CC0000" size=6> &#712sev&#601n  </font> </div>  </td></tr>
-<tr><td>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td> <div class="line_text1">  <font color="#CC0000" size=6> eight </font> </div>  </td><td> <div class="line_text1">  <font color="#CC0000" size=6> e&#618t </font> </div>  </td></tr>
-<tr><td>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td> <div class="line_text1">  <font color="#CC0000" size=6> nine  </font> </div>  </td><td> <div class="line_text1">  <font color="#CC0000" size=6> na&#618n  </font> </div>  </td></tr>
-<tr><td>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td> <div class="line_text1">  <font color="#CC0000" size=6> ten </font> </div>  </td><td> <div class="line_text1">  <font color="#CC0000" size=6> ten </font> </div>  </td></tr>
-<tr><td>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td> <div class="line_text1">  <font color="#CC0000" size=6> eleven  </font> </div>  </td><td> <div class="line_text1">  <font color="#CC0000" size=6> &#618 &#712lev &#601n </font> </div>  </td></tr>
-<tr><td>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td> <div class="line_text1">  <font color="#CC0000" size=6> twelve  </font> </div>  </td><td> <div class="line_text1">  <font color="#CC0000" size=6> twelv </font> </div>  </td></tr>
-<tr><td>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td> <div class="line_text1">  <font color="#CC0000" size=6> thirteen  </font> </div>  </td><td> <div class="line_text1">  <font color="#CC0000" size=6> &#716&#952&#604&#720 &#712t&#618&#720n  </font> </div>  </td></tr>
-<tr><td>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td> <div class="line_text1">  <font color="#CC0000" size=6> fourteen  </font> </div>  </td><td> <div class="line_text1">  <font color="#CC0000" size=6> &#716f&#596&#720 &#712t&#618&#720n  </font> </div>  </td></tr>
-<tr><td>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td> <div class="line_text1">  <font color="#CC0000" size=6> fifteen </font> </div>  </td><td> <div class="line_text1">  <font color="#CC0000" size=6> &#716f&#618f &#712t&#618&#720n  </font> </div>  </td></tr>
-<tr><td>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td> <div class="line_text1">  <font color="#CC0000" size=6> seventeen </font> </div>  </td><td> <div class="line_text1">  <font color="#CC0000" size=6> &#716sev &#601n &#712t&#618&#720n   </font> </div>  </td></tr>
-<tr><td>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td> <div class="line_text1">  <font color="#CC0000" size=6> eighteen  </font> </div>  </td><td> <div class="line_text1">  <font color="#CC0000" size=6>  &#716e&#618 &#712t&#618&#720n  </font> </div>  </td></tr>
-<tr><td>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td> <div class="line_text1">  <font color="#CC0000" size=6> nineteen  </font> </div>  </td><td> <div class="line_text1">  <font color="#CC0000" size=6> &#716na&#618n &#712t&#618&#720n   </font> </div>  </td></tr>
-<tr><td>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td> <div class="line_text1">  <font color="#CC0000" size=6> twenty  </font> </div>  </td><td> <div class="line_text1">  <font color="#CC0000" size=6> &#712twent&#618 </font> </div>  </td></tr>
-<tr><td>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td> <div class="line_text1">  <font color="#CC0000" size=6> twenty-one  </font> </div>  </td><td> <div class="line_text1">  <font color="#CC0000" size=6> &#712twent&#618-w&#652n </font> </div>  </td></tr>
-<tr><td>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td> <div class="line_text1">  <font color="#CC0000" size=6> twenty-two  </font> </div>  </td><td> <div class="line_text1">  <font color="#CC0000" size=6> &#712twent&#618-tu&#720 </font> </div>  </td></tr>
-<tr><td>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td> <div class="line_text1">  <font color="#CC0000" size=6>   </font> </div>  </td><td> <div class="line_text1">  <font color="#CC0000" size=6>   </font> </div>  </td></tr>
-<tr><td>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td> <div class="line_text1">  <font color="#CC0000" size=6> thirty  </font> </div>  </td><td> <div class="line_text1">  <font color="#CC0000" size=6>  &#712&#952&#604&#720t&#618 </font> </div>  </td></tr>
-<tr><td>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td> <div class="line_text1">  <font color="#CC0000" size=6> thirty-one  </font> </div>  </td><td> <div class="line_text1">  <font color="#CC0000" size=6>  &#712&#952&#604&#720t&#618 w&#652n </font> </div>  </td></tr>
-<tr><td>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td> <div class="line_text1">  <font color="#CC0000" size=6> thirty-two  </font> </div>  </td><td> <div class="line_text1">  <font color="#CC0000" size=6>  &#712&#952&#604&#720t&#618 tu&#720 </font> </div>  </td></tr>
-<tr><td>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td> <div class="line_text1">  <font color="#CC0000" size=6> forty </font> </div>  </td><td> <div class="line_text1">  <font color="#CC0000" size=6> &#712f&#596&#720t&#618  </font> </div>  </td></tr>
-<tr><td>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td> <div class="line_text1">  <font color="#CC0000" size=6> forty-one </font> </div>  </td><td> <div class="line_text1">  <font color="#CC0000" size=6> &#712f&#596&#720t&#618 w&#652n  </font> </div>  </td></tr>
-<tr><td>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td> <div class="line_text1">  <font color="#CC0000" size=6> forty-two </font> </div>  </td><td> <div class="line_text1">  <font color="#CC0000" size=6> &#712f&#596&#720t&#618 tu&#720  </font> </div>  </td></tr>
-<tr><td>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td> <div class="line_text1">  <font color="#CC0000" size=6> fifty </font> </div>  </td><td> <div class="line_text1">  <font color="#CC0000" size=6>  &#712f&#618ft&#618 </font> </div>  </td></tr>
-<tr><td>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td> <div class="line_text1">  <font color="#CC0000" size=6> sixty </font> </div>  </td><td> <div class="line_text1">  <font color="#CC0000" size=6>  &#712s&#618kst&#618  </font> </div>  </td></tr>
-<tr><td>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td> <div class="line_text1">  <font color="#CC0000" size=6> seventy </font> </div>  </td><td> <div class="line_text1">  <font color="#CC0000" size=6> &#712sev &#601nt&#618   </font> </div>  </td></tr>
-<tr><td>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td> <div class="line_text1">  <font color="#CC0000" size=6> eighty  </font> </div>  </td><td> <div class="line_text1">  <font color="#CC0000" size=6> &#712e&#618t&#618   </font> </div>  </td></tr>
-<tr><td>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td> <div class="line_text1">  <font color="#CC0000" size=6> ninety  </font> </div>  </td><td> <div class="line_text1">  <font color="#CC0000" size=6> &#712na&#618nt&#618 </font> </div>  </td></tr>
-<tr><td>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td> <div class="line_text1">  <font color="#CC0000" size=6>   </font> </div>  </td><td> <div class="line_text1">  <font color="#CC0000" size=6>   </font> </div>  </td></tr>
-
-</table>
-  </div>
-
-  <div data-role="footer">
-    <h1>Footer Text</h1>
-  </div>
-
-</div> 
-</body>
+      function onContactSaveError(e) {
+        var msgText;
+        //======================================================
+        //Now build a message string based upon the error
+        //returned by the API
+        //======================================================
+        switch(e.code) {
+          case ContactError.UNKNOWN_ERROR:
+            msgText = "An Unknown Error was reported while saving the contact.";
+            break;
+          case ContactError.INVALID_ARGUMENT_ERROR:
+            msgText = "An invalid argument was used with the Contact API.";
+            break;
+          case ContactError.TIMEOUT_ERROR:
+            msgText = "Timeout Error.";
+            break;
+          case ContactError.PENDING_OPERATION_ERROR:
+            msgText = "Pending Operation Error.";
+            break;
+          case ContactError.IO_ERROR:
+            msgText = "IO Error.";
+            break; 
+          case ContactError.NOT_SUPPORTED_ERROR:
+            msgText = "Not Supported Error.";
+            break;
+          case ContactError.PERMISSION_DENIED_ERROR:
+            msgText = "Permission Denied Error.";
+            break;
+          default:
+            //Create a generic response, just in case the
+            // switch fails
+            msgText = "Unknown Error (" + e.code + ")";
+        }
+        //======================================================
+        //Now tell the user what happened
+        //======================================================
+        navigator.notification.alert(msgText, null, "Contact Save Error");
+      }
+    </script>
+  </head>
+  <body onload="onBodyLoad()">
+    <section id="main" data-role="page" >
+      <header data-role="header">
+        <h1>Contacts Demo #1</h1>
+      </header>
+      <div data-role="content">
+        <h3>Select Contact:</h3>
+        <div id="contacts">
+          <ul data-role="listview">
+            <li>
+              <a onclick="getContact('mpalin');">Michael Palin</a>
+            </li>
+            <li>
+              <a onclick="getContact('jcleese');">John Cleese</a>
+            </li>
+            <li>
+              <a onclick="getContact('tjones');">Terry Jones</a>
+            </li>
+            <li>
+              <a onclick="getContact('gchapman');">Graham Chapman</a>
+            </li>
+            <li>
+              <a onclick="getContact('tgilliam');">Terry Gilliam</a>
+            </li>
+            <li>
+              <a onclick="getContact('eidle');">Eric Idle</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <footer data-role="footer" data-position="fixed">
+        <a href="http://www.phonegapessentials.com" target="_blank">PhoneGap Essentials</a>
+      </footer>
+    </section>
+    <section id="contactDetail" data-role="page" data-add-back-btn="true">
+      <header id="detailHeader" data-role="header"  >
+        <h1 id="contactName"></h1>
+      </header>
+      <div data-role="content">
+        <div id="detailContent"></div>
+        <input type="button" id="btnAdd" value="Add Contact" onclick="addContact();" />
+      </div>
+    </section>
+  </body>
 </html>
